@@ -1,0 +1,31 @@
+# gitleaks configuration
+# Run before the first push AND against full history:
+#   gitleaks dir . --config .gitleaks.toml -v      (files on disk)
+#   gitleaks git . --config .gitleaks.toml -v      (full commit history)
+title = "repo secret scan"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "internal-hostname"
+description = "Internal or corporate hostname committed to a public repo"
+regex = '''(?i)\b[a-z0-9-]+\.(local|lan|internal|corp|intranet)\b'''
+tags = ["hostname", "internal"]
+
+[[rules]]
+id = "unc-path"
+description = "UNC share path"
+regex = '''\\\\[A-Za-z0-9._-]{3,}\\[A-Za-z0-9._$-]+'''
+tags = ["share", "internal"]
+
+[allowlist]
+description = "Documentation placeholders"
+regexTarget = "match"
+regexes = [
+  '''example\.(com|local|org)''',
+  '''FILESERVER\.example\.local''',
+  '''PRINTSERVER\.example\.local''',
+  '''contoso''',
+  '''CONTOSO''',
+]
